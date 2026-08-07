@@ -138,3 +138,23 @@ Third-party and vendored code remains under its original licenses. See:
   — crate-local notice for the codex and opencode ports (license texts +
   Apache §4(b) change notice)
 - [`third_party/NOTICE`](third_party/NOTICE) — vendored Mermaid-stack index
+
+
+## Serialization Error Fix
+
+### Issue: `invalid type: null, expected u32`
+
+When xAI API returns error responses (e.g., "Timed out waiting for first token"), the Rust/serde deserializer crashes because it expects `u32` fields like `created_at` but gets `null`.
+
+**Root causes:**
+1. Including deprecated `stream_options` field in request body — xAI removed support
+2. API timeout/overload — returns non-standard error responses
+3. Rate limiting — 429 responses with malformed body
+
+**Fix applied in this fork:**
+- Strip `stream_options` from all requests before sending
+- Add error response pre-check before deserialization
+- Use lenient parsing that accepts `null` for integer fields
+- Wrap API calls with retry logic for transient failures
+
+See `docs/serialization-fix.md` for implementation details.
