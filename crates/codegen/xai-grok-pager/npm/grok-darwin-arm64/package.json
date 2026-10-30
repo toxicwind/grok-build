@@ -1,4 +1,8 @@
 {
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "bun-types": "^1.4.4"
+  },
     "name": "@xai-official/grok-darwin-arm64",
     "version": "0.2.0-dev",
     "description": "darwin-arm64 binary for @xai-official/grok. Do not install directly; install @xai-official/grok instead.",
